@@ -94,12 +94,7 @@ const Cart = () => {
   };
 
   const handleAddInc = async (itemId: string) => {
-    console.log(cartItemsWithProducts);
-    console.log(itemId);
-
     const item = cartItemsWithProducts.find((i) => i.product._id === itemId);
-
-    console.log(item);
     setCartItemsWithProducts((prev) =>
       prev.map((i) =>
         i.product._id === itemId
@@ -119,12 +114,7 @@ const Cart = () => {
       })
     );
     try {
-      console.log("calling apiiiii");
-      console.log(itemId);
       const res = await userAPI.addToCart(itemId).catch();
-      console.log(res);
-
-      console.log("called apiiiii");
     } catch (err) {
       console.error("Failed to increase item:", err);
     }

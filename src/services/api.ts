@@ -114,6 +114,7 @@ export const productsAPI = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
+      credentials: "include",
     });
     return response.json();
   },
@@ -123,6 +124,7 @@ export const productsAPI = {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(product),
+      credentials: "include",
     });
     return response.json();
   },
@@ -130,6 +132,7 @@ export const productsAPI = {
   delete: async (id: string): Promise<void> => {
     await fetch(`${BASE_URL}/products/${id}`, {
       method: "DELETE",
+      credentials: "include",
     });
   },
 };
@@ -182,17 +185,24 @@ export const userAPI = {
 // Orders API
 export const ordersAPI = {
   getAll: async (): Promise<Order[]> => {
-    const response = await fetch(`${BASE_URL}/allOrders`);
+    const response = await fetch(`${BASE_URL}/allOrders`, {
+      credentials: "include",
+    });
     return response.json();
   },
 
   getMy: async (): Promise<Order[]> => {
-    const response = await fetch(`${BASE_URL}/orders`);
+    const response = await fetch(`${BASE_URL}/orders`, {
+      credentials: "include",
+    });
     return response.json();
   },
 
   getById: async (id: string): Promise<Order> => {
-    const response = await fetch(`${BASE_URL}/orders/${id}`);
+    const response = await fetch(`${BASE_URL}/orders/${id}`, {
+      body: JSON.stringify({ id }),
+      credentials: "include",
+    });
     return response.json();
   },
 
@@ -201,15 +211,17 @@ export const ordersAPI = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
+      credentials: "include",
     });
     return response.json();
   },
 
-  updateStatus: async (id: string): Promise<Order> => {
-    const response = await fetch(`${BASE_URL}/orders/${id}`, {
+  updateStatus: async (id: string, status: string): Promise<Order> => {
+    const response = await fetch(`${BASE_URL}/orders/${id}/${status}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
+      credentials: "include",
     });
     return response.json();
   },
