@@ -39,11 +39,13 @@ const Header = () => {
               className="text-muted-foreground hover:text-candle-warm transition-colors">
               Orders
             </Link>
-            <Link
-              to="/admin"
-              className="text-muted-foreground hover:text-candle-warm transition-colors">
-              Admin
-            </Link>
+            {userData?.isAdmin && (
+              <Link
+                to="/admin"
+                className="text-muted-foreground hover:text-candle-warm transition-colors">
+                Admin
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -65,17 +67,19 @@ const Header = () => {
               </Button>
             </Link>
 
-            {userData === null ? <Link to="/login">
-              <Button size="icon" variant="ghost">
-                <User className="h-4 w-4" />
-              </Button>
-            </Link> : 
-            <Link to="/profile">
-              <Button size="icon" variant="ghost">
-                <User className="h-4 w-4" />
-              </Button>
-            </Link>
-            }
+            {userData === null ? (
+              <Link to="/login">
+                <Button size="icon" variant="ghost">
+                  <User className="h-4 w-4" />
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/profile">
+                <Button size="icon" variant="ghost">
+                  <User className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>

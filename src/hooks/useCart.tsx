@@ -16,6 +16,7 @@ export function useCart() {
   const cart = useSelector((store: RootState) => store.cart);
   const user = useSelector((store: RootState) => store.user);
 
+  // -------- Cart Functions --------
   const refreshCart = async () => {
     try {
       const res = await userAPI.getCart();

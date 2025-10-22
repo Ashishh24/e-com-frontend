@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
@@ -11,11 +16,26 @@ import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/NotFound";
-import { Provider } from "react-redux";
-import appStore from "./utils/appStore";
+import { Provider, useSelector } from "react-redux";
+import appStore, { RootState } from "./utils/appStore";
 import User from "./components/User";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
+
+const AdminRoute = ({ children }: { children: JSX.Element }) => {
+  const userData = useSelector((store: RootState) => store.user);
+
+  if (!userData) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userData.isAdmin) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
 
 function App() {
   return (
@@ -30,7 +50,14 @@ function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <Admin />
+                </AdminRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />

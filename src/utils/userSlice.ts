@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   phone?: string;
+  isAdmin: boolean;
 }
 
 type UserState = User | null;

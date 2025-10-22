@@ -9,12 +9,12 @@ export interface Review {
 }
 
 export interface Product {
-  _id: string;
+  _id?: string;
   name: string;
   category: string;
   description: string;
   price: number;
-  discountedPrice: number;
+  discountedPrice?: number;
   burnTime?: string;
   size: string;
   ingredients: string[];
@@ -22,10 +22,10 @@ export interface Product {
   images: string[];
   inStock: boolean;
   special: boolean;
-  avgRating: number;
-  reviews: Review[];
-  createdAt: string;
-  updatedAt: string;
+  avgRating?: number;
+  reviews?: Review[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Address {
@@ -71,7 +71,7 @@ export interface OrderItem {
 
 export interface Order {
   _id: string;
-  userId: string;
+  userId: User;
   items: OrderItem[];
   shippingAddress: Address;
   payment: {
@@ -104,8 +104,8 @@ export const productsAPI = {
     return response.json();
   },
 
-  create: async (
-    product: Omit<
+  createProduct: async (
+    productData: Omit<
       Product,
       "_id" | "createdAt" | "updatedAt" | "avgRating" | "reviews"
     >
@@ -113,13 +113,16 @@ export const productsAPI = {
     const response = await fetch(`${BASE_URL}/products`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
+      body: JSON.stringify(productData),
       credentials: "include",
     });
     return response.json();
   },
 
-  update: async (id: string, product: Partial<Product>): Promise<Product> => {
+  updateProduct: async (
+    id: string,
+    product: Partial<Product>
+  ): Promise<Product> => {
     const response = await fetch(`${BASE_URL}/products/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -129,7 +132,7 @@ export const productsAPI = {
     return response.json();
   },
 
-  delete: async (id: string): Promise<void> => {
+  deleteProduct: async (id: string): Promise<void> => {
     await fetch(`${BASE_URL}/products/${id}`, {
       method: "DELETE",
       credentials: "include",
@@ -180,6 +183,29 @@ export const userAPI = {
     });
     return response.json();
   },
+
+  updateWishlist: async (itemID: string): Promise<User["wishlist"]> => {
+    const response = await fetch(`${BASE_URL}/wishlist/${itemID}`, {
+      method: "POST",
+      body: JSON.stringify({ itemID }),
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message);
+    }
+
+    return data;
+  },
+
+  getWishlist: async (): Promise<User["wishlist"]> => {
+    const response = await fetch(`${BASE_URL}/wishlist`, {
+      credentials: "include",
+    });
+    return response.json();
+  },
 };
 
 // Orders API
@@ -217,7 +243,7 @@ export const ordersAPI = {
   },
 
   updateStatus: async (id: string, status: string): Promise<Order> => {
-    const response = await fetch(`${BASE_URL}/orders/${id}/${status}`, {
+    const response = await fetch(`${BASE_URL}/order/${id}/${status}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),

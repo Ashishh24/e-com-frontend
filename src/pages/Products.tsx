@@ -146,7 +146,12 @@ const Products = () => {
                   className="group hover:shadow-soft transition-all duration-300">
                   <CardContent className="p-6 space-y-4">
                     <div className="aspect-square bg-candle-cream rounded-lg overflow-hidden mb-4 relative">
-                      <div className="w-full h-full bg-gradient-glow opacity-20"></div>
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="w-full h-full bg-gradient-glow opacity-20 absolute top-0 left-0"></div>
                       {!product.inStock && (
                         <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
                           <Badge variant="secondary">Out of Stock</Badge>
@@ -168,7 +173,9 @@ const Products = () => {
                       </div>
 
                       <p className="text-sm text-candle-amber font-light">
-                        {product.fragrances.join(", ")}
+                        {product.fragrances.length > 0
+                          ? product.fragrances.join(", ")
+                          : "-"}
                       </p>
                       <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
                         {product.description}
@@ -181,14 +188,21 @@ const Products = () => {
 
                     <div className="flex items-center justify-between pt-4">
                       <div className="flex items-center gap-2">
-                        {product.price !== product.discountedPrice && (
-                          <span className="text-lg text-muted-foreground line-through">
+                        {product.discountedPrice ? (
+                          <div>
+                            <span className="text-lg text-muted-foreground line-through">
+                              ₹{product.price}
+                            </span>
+
+                            <span className="text-xl font-light text-candle-burgundy">
+                              ₹{product.discountedPrice}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xl font-light text-candle-burgundy">
                             ₹{product.price}
                           </span>
                         )}
-                        <span className="text-xl font-light text-candle-burgundy">
-                          ₹{product.discountedPrice}
-                        </span>
                       </div>
                       <div className="flex space-x-2">
                         <Link to={`/product/${product._id}`}>

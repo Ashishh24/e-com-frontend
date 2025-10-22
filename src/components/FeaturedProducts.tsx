@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { productsAPI, Product } from "@/services/api";
 import { useCart } from "@/hooks/useCart";
 import candlesCollection from "@/assets/candles-collection.jpg";
+import { Link } from "react-router-dom";
 
 // Using Product interface from API service
 
@@ -18,7 +19,7 @@ const FeaturedProducts = () => {
         const featuredProducts = await productsAPI.getFeatured();
         setProducts(featuredProducts.slice(0, 3)); // Show only first 3
       } catch (error) {
-        console.error('Failed to load featured products:', error);
+        console.error("Failed to load featured products:", error);
       } finally {
         setLoading(false);
       }
@@ -28,7 +29,7 @@ const FeaturedProducts = () => {
   }, []);
 
   const handleAddToCart = async (productId: string) => {
-    await addItem(productId, 1);
+    await addItem(productId);
   };
 
   return (
@@ -39,62 +40,79 @@ const FeaturedProducts = () => {
             Featured Collection
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Each candle is carefully crafted in small batches using the finest natural ingredients
+            Each candle is carefully crafted in small batches using the finest
+            natural ingredients
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {loading ? (
-            // Loading skeleton
-            [...Array(3)].map((_, index) => (
-              <Card key={index} className="animate-pulse">
-                <CardContent className="p-6 space-y-4">
-                  <div className="aspect-square bg-muted rounded-lg"></div>
-                  <div className="space-y-2">
-                    <div className="h-6 bg-muted rounded"></div>
-                    <div className="h-4 bg-muted rounded w-3/4"></div>
-                    <div className="h-12 bg-muted rounded"></div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          ) : (
-            products.map((product) => (
-              <Card key={product._id} className="group hover:shadow-soft transition-all duration-300 border-border/50">
-                <CardContent className="p-6 space-y-4">
-                  <div className="aspect-square bg-candle-cream rounded-lg overflow-hidden mb-4">
-                    <div className="w-full h-full bg-gradient-glow opacity-20"></div>
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-medium text-candle-warm">{product.name}</h3>
-                    <p className="text-sm text-candle-amber font-light">{product.fragrances[0]}</p>
-                    <p className="text-muted-foreground text-sm leading-relaxed">{product.description}</p>
-                  </div>
-                  <div className="flex items-center justify-between pt-4">
-                    <span className="text-2xl font-light text-candle-burgundy">₹{product.discountedPrice}</span>
-                    <Button 
-                      variant="secondary" 
-                      size="sm"
-                      onClick={() => handleAddToCart(product._id)}
-                    >
-                      Add to Cart
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
+          {loading
+            ? // Loading skeleton
+              [...Array(3)].map((_, index) => (
+                <Card key={index} className="animate-pulse">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="aspect-square bg-muted rounded-lg"></div>
+                    <div className="space-y-2">
+                      <div className="h-6 bg-muted rounded"></div>
+                      <div className="h-4 bg-muted rounded w-3/4"></div>
+                      <div className="h-12 bg-muted rounded"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            : products.map((product) => (
+                <Card
+                  key={product._id}
+                  className="group hover:shadow-soft transition-all duration-300 border-border/50">
+                  <CardContent className="p-6 space-y-4">
+                    <div className="aspect-square bg-candle-cream rounded-lg overflow-hidden mb-4">
+                      <div className="w-full h-full bg-gradient-glow">
+                        <img
+                          src={product.images[0]}
+                          className="w-full h-full object-cover transition-opacity duration-500 opacity-100 animate-fadeIn"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-medium text-candle-warm">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-candle-amber font-light">
+                        {product.fragrances && product.fragrances.length > 0
+                          ? product.fragrances.slice(0, 2).join(", ")
+                          : "-"}
+                      </p>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {product.description}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between pt-4">
+                      <span className="text-2xl font-light text-candle-burgundy">
+                        ₹{product.discountedPrice}
+                      </span>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleAddToCart(product._id)}>
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
         </div>
 
         <div className="text-center">
-          <img 
-            src={candlesCollection} 
+          <img
+            src={candlesCollection}
             alt="Beautiful collection of artisan candles"
             className="w-full max-w-4xl mx-auto rounded-lg shadow-soft mb-8"
           />
-          <Button variant="hero" size="lg" className="px-12 py-6">
-            View All Products
-          </Button>
+          <Link to="/products">
+            <Button variant="hero" size="lg" className="px-12 py-6">
+              View All Products
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
