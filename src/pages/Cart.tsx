@@ -29,7 +29,7 @@ const Cart = () => {
   >([]);
   const [subTotal, setSubTotal] = useState(0);
   const [loadingProducts, setLoadingProducts] = useState(true);
-
+  const shipping = subTotal > 1000 ? 0 : 250;
   useEffect(() => {
     console.log(items, "items");
     const loadProductDetails = async () => {
@@ -224,17 +224,17 @@ const Cart = () => {
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>₹{subTotal.toFixed(2)}</span>
+                    <span>₹ {subTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>Free</span>
+                    <span>₹ {shipping}</span>
                   </div>
                   <div className="border-t pt-4">
                     <div className="flex justify-between font-medium text-lg">
                       <span>Total</span>
                       <span className="text-candle-burgundy">
-                        ₹{subTotal.toFixed(2)}
+                        ₹ {(subTotal + shipping).toFixed(2)}
                       </span>
                     </div>
                   </div>
