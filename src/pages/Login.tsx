@@ -110,7 +110,7 @@ const Login = () => {
                 </Button>
 
                 <div className="text-center text-sm text-candle-brown">
-                  Don't have an account?{" "}
+                  Don't have an account?
                   <Link
                     to="/signup"
                     className="text-candle-gold hover:text-candle-gold/80 font-medium transition-colors">

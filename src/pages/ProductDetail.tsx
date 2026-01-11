@@ -258,15 +258,27 @@ const ProductDetail = () => {
 
             <div className="space-y-4">
               <div className="flex space-x-4">
-                <Button
-                  className="flex-1"
-                  variant="hero"
-                  size="lg"
-                  onClick={handleAddToCart}
-                  disabled={!product.inStock}>
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Add to Cart
-                </Button>
+                {product.inStock ? (
+                  <Button
+                    className="flex-1"
+                    variant="hero"
+                    size="lg"
+                    onClick={handleAddToCart}>
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    Add to Cart
+                  </Button>
+                ) 
+                : (
+                  <Button
+                    className="flex-1"
+                    variant="hero"
+                    size="lg"
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock}>
+                    Out of Stock
+                  </Button>
+                )
+                }
                 <Button
                   size="icon"
                   variant="outline"

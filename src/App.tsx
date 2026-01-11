@@ -20,6 +20,7 @@ import { Provider, useSelector } from "react-redux";
 import appStore, { RootState } from "./utils/appStore";
 import User from "./components/User";
 import { useEffect } from "react";
+import VerifyEmail from "./pages/VerifyEmail";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/orders" element={<Orders />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route
               path="/admin"
               element={
@@ -60,8 +62,8 @@ function App() {
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <Toaster />
-          <ShadcnToaster />
+          <Toaster duration={2000} />
+          {/* <ShadcnToaster /> */}
           <User />
         </Router>
       </QueryClientProvider>

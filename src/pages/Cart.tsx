@@ -137,7 +137,7 @@ const Cart = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-4xl font-light text-candle-warm mb-8">
+          <h1 className="text-2xl md:text-4xl font-light text-candle-warm mb-6 text-center md:text-left">
             Shopping Cart
           </h1>
           <div className="animate-pulse space-y-4">
@@ -154,35 +154,32 @@ const Cart = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-light text-candle-warm mb-8">
+        <h1 className="text-2xl md:text-4xl font-light text-candle-warm mb-6 text-center md:text-left">
           Shopping Cart
         </h1>
 
         {cartItemsWithProducts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg mb-4">
+            <p className="text-muted-foreground text-sm md:text-lg mb-4">
               Your cart is empty
             </p>
             <Link to="/products">
-              <Button variant="hero">Continue Shopping</Button>
+              <Button variant="hero" className="w-full sm:w-auto">Continue Shopping</Button>
             </Link>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-3">
               {cartItemsWithProducts?.map((item) => (
                 <Card key={item.product._id}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-20 h-20 bg-candle-cream rounded-lg flex-shrink-0"></div>
-                      <div className="flex-1">
-                        <h3 className="font-medium text-candle-warm">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-candle-cream rounded-lg flex-shrink-0"></div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-candle-warm text-sm sm:text-base h-6 overflow-hidden truncate">
                           {item.product.name}
                         </h3>
-                        <p className="text-sm text-candle-amber">
-                          {item.product.fragrances.join(", ")}
-                        </p>
-                        <p className="text-lg font-light text-candle-burgundy">
+                        <p className="text-base sm:text-lg font-light text-candle-burgundy h-6 overflow-hidden truncate">
                           ₹{item.product.discountedPrice}
                         </p>
                       </div>
@@ -190,22 +187,24 @@ const Cart = () => {
                         <Button
                           size="icon"
                           variant="outline"
+                          className="h-8 w-8 p-0"
                           onClick={() => handleMinus(item.product._id)}>
-                          <Minus className="h-4 w-4" />
+                          <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="w-8 text-center">{item.quantity}</span>
+                        <span className="w-6 text-center text-sm">{item.quantity}</span>
                         <Button
                           size="icon"
                           variant="outline"
+                          className="h-8 w-8 p-0"
                           onClick={() => handleAddInc(item.product._id)}>
-                          <Plus className="h-4 w-4" />
+                          <Plus className="h-3 w-3" />
                         </Button>
                         <Button
                           size="icon"
                           variant="ghost"
-                          onClick={() => handleDel(item.product._id)}
-                          className="text-destructive">
-                          <Trash2 className="h-4 w-4" />
+                          className="text-destructive h-8 w-8 p-0"
+                          onClick={() => handleDel(item.product._id)}>
+                          <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
@@ -215,7 +214,7 @@ const Cart = () => {
             </div>
 
             <div>
-              <Card className="sticky top-24">
+              <Card className="lg:sticky lg:top-24">
                 <CardHeader>
                   <CardTitle className="text-candle-warm">
                     Order Summary
@@ -224,14 +223,14 @@ const Cart = () => {
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>₹ {subTotal.toFixed(2)}</span>
+                    <span className="text-sm md:text-base">₹ {subTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>₹ {shipping}</span>
+                    <span className="text-sm md:text-base">₹ {shipping}</span>
                   </div>
                   <div className="border-t pt-4">
-                    <div className="flex justify-between font-medium text-lg">
+                    <div className="flex justify-between font-medium text-base md:text-lg">
                       <span>Total</span>
                       <span className="text-candle-burgundy">
                         ₹ {(subTotal + shipping).toFixed(2)}

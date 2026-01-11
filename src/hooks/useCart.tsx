@@ -28,11 +28,11 @@ export function useCart() {
       dispatch(setCart(mapped));
     } catch (err) {
       console.error("Failed to load cart:", err);
-      toast({
-        title: "Error",
-        description: "Failed to load cart items",
-        variant: "destructive",
-      });
+      // toast({
+      //   title: "Error",
+      //   description: "Failed to load cart items",
+      //   variant: "destructive",
+      // });
     }
   };
 
@@ -41,8 +41,8 @@ export function useCart() {
       await userAPI.addToCart(itemId);
       await refreshCart();
       toast({
-        title: "Added to cart",
-        description: "Item has been added to your cart",
+        title: "Item added to cart",
+        // description: "Item has been added to your cart",
       });
     } catch (err) {
       console.error("Failed to add item:", err);
@@ -60,7 +60,7 @@ export function useCart() {
       await refreshCart();
       toast({
         title: "Item removed",
-        description: "Item quantity decreased by 1",
+        // description: "Item quantity decreased by 1",
       });
     } catch (err) {
       console.error("Failed to remove item:", err);

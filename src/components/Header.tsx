@@ -1,11 +1,16 @@
-import { ShoppingCart, User, Search } from "lucide-react";
+import { ShoppingCart, User, Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { useCart } from "@/hooks/useCart";
 import { useSelector } from "react-redux";
-import { RootState } from "@/utils/appStore"; // adjust path
-import { ReactNode } from "react";
+import { RootState } from "@/utils/appStore";
 
 const Header = () => {
   const { cart } = useCart();
@@ -22,6 +27,8 @@ const Header = () => {
             className="text-2xl font-light text-candle-warm hover:text-candle-amber transition-colors">
             GLOWISHII...
           </Link>
+
+
 
           <div className="hidden md:flex items-center space-x-8">
             <Link
@@ -54,6 +61,40 @@ const Header = () => {
               <Button size="icon" variant="ghost">
                 <Search className="h-4 w-4" />
               </Button>
+            </div>
+
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="ghost">
+                    <Menu className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    <Link to="/" className="w-full block">
+                      Home
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/products" className="w-full block">
+                      Products
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/orders" className="w-full block">
+                      Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  {userData?.isAdmin && (
+                    <DropdownMenuItem>
+                      <Link to="/admin" className="w-full block">
+                        Admin
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <Link to="/cart">

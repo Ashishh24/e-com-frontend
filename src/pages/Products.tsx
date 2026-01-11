@@ -72,14 +72,13 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-4xl font-light text-candle-warm mb-4">
+          <h1 className="text-2xl md:text-4xl font-light text-candle-warm mb-3 text-center md:text-left">
             Our Candle Collection
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl">
-            Discover our carefully curated selection of premium hand-poured
-            candles
+          <p className="text-sm md:text-lg text-muted-foreground max-w-none md:max-w-2xl mx-auto md:mx-0 text-center md:text-left">
+            Discover our carefully curated selection of premium hand-poured candles
           </p>
         </div>
 
@@ -90,13 +89,13 @@ const Products = () => {
               placeholder="Search candles..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-md"
+              className="w-full md:max-w-md"
             />
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
             <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full md:w-[180px]">
                 <Filter className="mr-2 h-4 w-4" />
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
@@ -111,7 +110,7 @@ const Products = () => {
             </Select>
 
             <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full md:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -125,13 +124,13 @@ const Products = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {loading
             ? // Loading skeleton
               [...Array(6)].map((_, index) => (
                 <Card key={index} className="animate-pulse">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="aspect-square bg-muted rounded-lg"></div>
+                  <CardContent className="p-4 sm:p-6 space-y-4">
+                    <div className="aspect-[4/3] sm:aspect-square bg-muted rounded-lg"></div>
                     <div className="space-y-2">
                       <div className="h-6 bg-muted rounded"></div>
                       <div className="h-4 bg-muted rounded w-3/4"></div>
@@ -144,8 +143,8 @@ const Products = () => {
                 <Card
                   key={product._id}
                   className="group hover:shadow-soft transition-all duration-300">
-                  <CardContent className="p-6 space-y-4">
-                    <div className="aspect-square bg-candle-cream rounded-lg overflow-hidden mb-4 relative">
+                  <CardContent className="p-4 sm:p-6 space-y-4">
+                    <div className="aspect-[4/3] sm:aspect-square bg-candle-cream rounded-lg overflow-hidden mb-4 relative">
                       <img
                         src={product.images[0]}
                         alt={product.name}
@@ -161,7 +160,7 @@ const Products = () => {
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-xl font-medium text-candle-warm">
+                        <h3 className="text-base md:text-lg font-semibold text-candle-warm">
                           {product.name}
                         </h3>
                         <div className="flex items-center space-x-1">
@@ -186,7 +185,7 @@ const Products = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4">
+                    <div className="flex items-center justify-between pt-4 gap-6">
                       <div className="flex items-center gap-2">
                         {product.discountedPrice ? (
                           <div>
@@ -204,15 +203,16 @@ const Products = () => {
                           </span>
                         )}
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full sm:w-auto">
                         <Link to={`/product/${product._id}`}>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="w-full sm:w-auto">
                             View Details
                           </Button>
                         </Link>
                         <Button
                           variant="secondary"
                           size="sm"
+                          className="w-full sm:w-auto"
                           disabled={!product.inStock}
                           onClick={() => handleAddToCart(product._id)}>
                           Add to Cart

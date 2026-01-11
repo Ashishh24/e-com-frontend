@@ -58,7 +58,7 @@ const About = () => {
             <div className="aspect-square bg-gradient-glow rounded-full opacity-20 absolute -top-8 -right-8 w-32 h-32"></div>
             <div className="bg-candle-cream rounded-lg p-12 shadow-soft relative">
               <blockquote className="text-xl font-light text-candle-warm leading-relaxed italic">
-                "Creating candles isn't just our craft—it's our passion. We
+                "Creating candles isn't just our craft; it's our passion. We
                 believe in the power of fragrance to transform spaces and create
                 lasting memories."
               </blockquote>
