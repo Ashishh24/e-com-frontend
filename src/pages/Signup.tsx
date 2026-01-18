@@ -13,7 +13,7 @@ import {
 import Header from "@/components/Header";
 import axios from "axios";
 import { BASE_URL } from "@/utils/url";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -21,7 +21,6 @@ const Signup = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,10 +32,8 @@ const Signup = () => {
         { withCredentials: true }
       );
 
-      toast({
-        title: "Signup successful",
-        description: response.data.message,
-      });
+      toast.success("Signup successful");
+
 
       // Redirect to OTP verification page
       navigate("/verify-email", {
@@ -50,11 +47,7 @@ const Signup = () => {
         err?.response?.data?.errors?.[0] ||
         "Signup failed";
 
-      toast({
-        title: "Signup failed",
-        description: errorMsg,
-        variant: "destructive",
-      });
+      toast.error(errorMsg);
     }
   };
 

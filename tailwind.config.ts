@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -47,12 +52,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-         candle: {
+        candle: {
           gold: "hsl(var(--candle-gold))",
           amber: "hsl(var(--candle-amber))",
           cream: "hsl(var(--candle-cream))",
           burgundy: "hsl(var(--candle-burgundy))",
           warm: "hsl(var(--candle-warm))",
+          deep: "hsl(var(--candle-deep))",
+          hover: "hsl(var(--candle-hover))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -87,7 +94,7 @@ export default {
             height: "0",
           },
         },
-        "glow": {
+        glow: {
           "0%": {
             boxShadow: "0 0 20px hsl(var(--candle-gold) / 0.5)",
           },
@@ -95,7 +102,7 @@ export default {
             boxShadow: "0 0 40px hsl(var(--candle-gold) / 0.8)",
           },
         },
-        "float": {
+        float: {
           "0%, 100%": {
             transform: "translateY(0px)",
           },
@@ -107,18 +114,25 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "glow": "glow 2s ease-in-out infinite alternate",
-        "float": "float 3s ease-in-out infinite",
+        glow: "glow 2s ease-in-out infinite alternate",
+        float: "float 3s ease-in-out infinite",
       },
       backgroundImage: {
-        'gradient-hero': 'var(--gradient-hero)',
-        'gradient-warm': 'var(--gradient-warm)',
-        'gradient-glow': 'var(--gradient-glow)',
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-warm": "var(--gradient-warm)",
+        "gradient-glow": "var(--gradient-glow)",
       },
       boxShadow: {
-        warm: 'var(--shadow-warm)',
-        glow: 'var(--shadow-glow)',
-        soft: 'var(--shadow-soft)',
+        warm: "var(--shadow-warm)",
+        glow: "var(--shadow-glow)",
+        soft: "var(--shadow-soft)",
+        elegant: "0 10px 30px -5px rgba(200, 100, 150, 0.3)",
+      },
+      backgroundColor: {
+        "candle-deep": "hsl(325 65% 35%)",
+      },
+      backgroundGradient: {
+        radial: "radial-gradient",
       },
     },
   },

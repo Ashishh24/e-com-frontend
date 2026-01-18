@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,14 +15,30 @@ import { Star, Filter } from "lucide-react";
 import Header from "@/components/Header";
 import { productsAPI, Product } from "@/services/api";
 import { useCart } from "@/hooks/useCart";
+import { getDiscountPercentage } from "@/utils/utils";
 
 const Products = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("name");
-  const [filterCategory, setFilterCategory] = useState("all");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const query = new URLSearchParams(location.search);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [sortBy, setSortBy] = useState("name");
+  // const [filterCategory, setFilterCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState(query.get("search") || "");
+  const [filterCategory, setFilterCategory] = useState(
+    query.get("category") || "all",
+  );
+  const [sortBy, setSortBy] = useState(query.get("sort") || "name");
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+
+  useEffect(() => {
+    setSearchTerm(query.get("search") || "");
+    setFilterCategory(query.get("category") || "all");
+    setSortBy(query.get("sort") || "name");
+  }, [location.search]);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -43,31 +59,79 @@ const Products = () => {
     await addItem(productId);
   };
 
-  const filteredProducts = products
-    .filter(
-      (product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.fragrances.some((fragrance) =>
-          fragrance.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    )
-    .filter(
-      (product) =>
-        filterCategory === "all" || product.category === filterCategory
-    )
-    .sort((a, b) => {
+  // const filteredProducts = products
+  //   .filter(
+  //     (product) =>
+  //       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //       product.fragrances.some((fragrance) =>
+  //         fragrance.toLowerCase().includes(searchTerm.toLowerCase()),
+  //       ),
+  //   )
+  //   .filter(
+  //     (product) =>
+  //       filterCategory === "all" || product.category === filterCategory,
+  //   )
+  //   .sort((a, b) => {
+  //     switch (sortBy) {
+  //       case "price-low":
+  //         return a.discountedPrice - b.discountedPrice;
+  //       case "price-high":
+  //         return b.discountedPrice - a.discountedPrice;
+  //       case "rating":
+  //         return b.avgRating - a.avgRating;
+  //       case "name":
+  //       default:
+  //         return a.name.localeCompare(b.name);
+  //     }
+  //   });
+
+  const filteredProducts = useMemo(() => {
+    let result = products;
+
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(term) ||
+          p.fragrances?.some((f) => f.toLowerCase().includes(term)),
+      );
+    }
+
+    if (filterCategory !== "all") {
+      result = result.filter((p) => p.category === filterCategory);
+    }
+
+    return result.sort((a, b) => {
       switch (sortBy) {
         case "price-low":
-          return a.discountedPrice - b.discountedPrice;
+          return (
+            (a.discountedPrice ? a.discountedPrice : a.price) -
+            (b.discountedPrice ? b.discountedPrice : b.price)
+          );
         case "price-high":
-          return b.discountedPrice - a.discountedPrice;
+          return (
+            (b.discountedPrice ? b.discountedPrice : b.price) -
+            (a.discountedPrice ? a.discountedPrice : a.price)
+          );
         case "rating":
           return b.avgRating - a.avgRating;
-        case "name":
         default:
           return a.name.localeCompare(b.name);
       }
     });
+  }, [products, searchTerm, filterCategory, sortBy]);
+
+  const updateURL = (key: string, value: string) => {
+    const params = new URLSearchParams(location.search);
+    value === "all" || value === ""
+      ? params.delete(key)
+      : params.set(key, value);
+    navigate(`/products?${params.toString()}`);
+  };
+
+  const clearAllFilters = () => {
+    navigate("/products");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -78,24 +142,28 @@ const Products = () => {
             Our Candle Collection
           </h1>
           <p className="text-sm md:text-lg text-muted-foreground max-w-none md:max-w-2xl mx-auto md:mx-0 text-center md:text-left">
-            Discover our carefully curated selection of premium hand-poured candles
+            Discover our carefully curated selection of premium hand-poured
+            candles
           </p>
         </div>
 
         {/* Filters and Search */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="flex-1">
+          <div className="flex flex-col md:flex-row gap-4 mb-8">
             <Input
               placeholder="Search candles..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:max-w-md"
+              onChange={(e) => updateURL("search", e.target.value)}
+              className="md:max-w-md"
             />
-          </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full">
-            <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-full md:w-[180px]">
+            {/* <div className="flex flex-col sm:flex-row gap-4 w-full"> */}
+            <Select
+              value={filterCategory}
+              // onValueChange={setFilterCategory}
+              onValueChange={(v) => updateURL("category", v)}
+            >
+              <SelectTrigger className="w-full md:w-[320px]">
                 <Filter className="mr-2 h-4 w-4" />
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
@@ -109,7 +177,11 @@ const Products = () => {
               </SelectContent>
             </Select>
 
-            <Select value={sortBy} onValueChange={setSortBy}>
+            <Select
+              value={sortBy}
+              // onValueChange={setSortBy}
+              onValueChange={(v) => updateURL("sort", v)}
+            >
               <SelectTrigger className="w-full md:w-[180px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
@@ -120,6 +192,10 @@ const Products = () => {
                 <SelectItem value="rating">Rating</SelectItem>
               </SelectContent>
             </Select>
+
+            <Button variant="outline" onClick={clearAllFilters}>
+              Clear Filters
+            </Button>
           </div>
         </div>
 
@@ -142,7 +218,8 @@ const Products = () => {
             : filteredProducts.map((product) => (
                 <Card
                   key={product._id}
-                  className="group hover:shadow-soft transition-all duration-300">
+                  className="group hover:shadow-soft transition-all duration-300"
+                >
                   <CardContent className="p-4 sm:p-6 space-y-4">
                     <div className="aspect-[4/3] sm:aspect-square bg-candle-cream rounded-lg overflow-hidden mb-4 relative">
                       <img
@@ -176,7 +253,7 @@ const Products = () => {
                           ? product.fragrances.join(", ")
                           : "-"}
                       </p>
-                      <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
+                      <p className="text-muted-foreground text-sm leading-relaxed truncate">
                         {product.description}
                       </p>
 
@@ -185,10 +262,11 @@ const Products = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4 gap-6">
-                      <div className="flex items-center gap-2">
+                    <div className="flex flex-col pt-4 gap-6">
+                      {/* PRICE — LEFT */}
+                      <div className="self-start flex items-center gap-2">
                         {product.discountedPrice ? (
-                          <div>
+                          <>
                             <span className="text-lg text-muted-foreground line-through">
                               ₹{product.price}
                             </span>
@@ -196,25 +274,45 @@ const Products = () => {
                             <span className="text-xl font-light text-candle-burgundy">
                               ₹{product.discountedPrice}
                             </span>
-                          </div>
+
+                            <span className="text-sm font-light text-candle-burgundy">
+                              (
+                              {getDiscountPercentage(
+                                product.price,
+                                product.discountedPrice,
+                              )}
+                              % off)
+                            </span>
+                          </>
                         ) : (
                           <span className="text-xl font-light text-candle-burgundy">
                             ₹{product.price}
                           </span>
                         )}
                       </div>
-                      <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full sm:w-auto">
-                        <Link to={`/product/${product._id}`}>
-                          <Button variant="outline" size="sm" className="w-full sm:w-auto">
+
+                      {/* BUTTONS — CENTER */}
+                      <div className="self-center flex flex-row gap-2 w-full sm:w-auto">
+                        <Link
+                          to={`/product/${product._id}`}
+                          className="flex-1 sm:flex-none"
+                        >
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full sm:w-auto"
+                          >
                             View Details
                           </Button>
                         </Link>
+
                         <Button
                           variant="secondary"
                           size="sm"
                           className="w-full sm:w-auto"
                           disabled={!product.inStock}
-                          onClick={() => handleAddToCart(product._id)}>
+                          onClick={() => handleAddToCart(product._id)}
+                        >
                           Add to Cart
                         </Button>
                       </div>
@@ -234,7 +332,8 @@ const Products = () => {
               onClick={() => {
                 setSearchTerm("");
                 setFilterCategory("all");
-              }}>
+              }}
+            >
               Clear Filters
             </Button>
           </div>

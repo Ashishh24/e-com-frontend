@@ -5,8 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/sonner";
-import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
+import { Toaster } from "react-hot-toast";import { Toaster as ShadcnToaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import Products from "@/pages/Products";
 import ProductDetail from "@/pages/ProductDetail";
@@ -21,6 +20,7 @@ import appStore, { RootState } from "./utils/appStore";
 import User from "./components/User";
 import { useEffect } from "react";
 import VerifyEmail from "./pages/VerifyEmail";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +52,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/profile" element={<Profile />} />
             <Route
               path="/admin"
               element={
@@ -62,8 +63,28 @@ function App() {
             />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <Toaster duration={2000} />
-          {/* <ShadcnToaster /> */}
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              style: {
+                fontSize: "14px",
+                padding: "12px 20px",
+              },
+              success: {
+                style: {
+                  background: "#d1fae5",
+                  color: "#065f46",
+                },
+              },
+              error: {
+                style: {
+                  background: "#fee2e2",
+                  color: "#991b1b",
+                },
+              },
+            }}
+          />
           <User />
         </Router>
       </QueryClientProvider>

@@ -29,7 +29,7 @@ const Cart = () => {
   >([]);
   const [subTotal, setSubTotal] = useState(0);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const shipping = subTotal > 1000 ? 0 : 250;
+  const shipping = subTotal > 599 ? 0 : 250;
   useEffect(() => {
     console.log(items, "items");
     const loadProductDetails = async () => {
@@ -48,7 +48,7 @@ const Cart = () => {
               ...item,
               product,
             };
-          })
+          }),
         );
         setCartItemsWithProducts(newItems);
         setSubTotal(total);
@@ -66,7 +66,7 @@ const Cart = () => {
   useEffect(() => {
     const newSubTotal = cartItemsWithProducts.reduce(
       (acc, item) => acc + item.itemsTotal,
-      0
+      0,
     );
     setSubTotal(newSubTotal);
   }, [cartItemsWithProducts]);
@@ -79,11 +79,15 @@ const Cart = () => {
             ? {
                 ...item,
                 quantity: item.quantity - 1,
-                itemsTotal: (item.quantity - 1) * item.product.discountedPrice,
+                itemsTotal:
+                  (item.quantity - 1) *
+                  (item.product.discountedPrice
+                    ? item.product.discountedPrice
+                    : item.product.price),
               }
-            : item
+            : item,
         )
-        .filter((item) => item.quantity > 0)
+        .filter((item) => item.quantity > 0),
     );
     dispatch(removeItemFromSlice(itemId));
     try {
@@ -101,17 +105,23 @@ const Cart = () => {
           ? {
               ...i,
               quantity: i.quantity + 1,
-              itemsTotal: (i.quantity + 1) * i.product.discountedPrice,
+              itemsTotal:
+                (i.quantity + 1) *
+                (i.product.discountedPrice
+                  ? i.product.discountedPrice
+                  : i.product.price),
             }
-          : i
-      )
+          : i,
+      ),
     );
     dispatch(
       addItemToSlice({
         product: item.product,
         quantity: 1,
-        itemsTotal: item.product.discountedPrice,
-      })
+        itemsTotal: item.product.discountedPrice
+          ? item.product.discountedPrice
+          : item.product.price,
+      }),
     );
     try {
       const res = await userAPI.addToCart(itemId).catch();
@@ -122,7 +132,7 @@ const Cart = () => {
 
   const handleDel = async (itemId: string) => {
     setCartItemsWithProducts((prev) =>
-      prev.filter((item) => item.product._id !== itemId)
+      prev.filter((item) => item.product._id !== itemId),
     );
     dispatch(clearCartItemFromSlice(itemId));
     try {
@@ -140,6 +150,13 @@ const Cart = () => {
           <h1 className="text-2xl md:text-4xl font-light text-candle-warm mb-6 text-center md:text-left">
             Shopping Cart
           </h1>
+          <p>
+            {subTotal < 599
+              ? "Add ₹" +
+                (599 - subTotal).toFixed(2) +
+                " more to get free shipping"
+              : "Congrats! You have unlocked free shipping"}
+          </p>
           <div className="animate-pulse space-y-4">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="h-20 bg-muted rounded"></div>
@@ -164,7 +181,9 @@ const Cart = () => {
               Your cart is empty
             </p>
             <Link to="/products">
-              <Button variant="hero" className="w-full sm:w-auto">Continue Shopping</Button>
+              <Button variant="hero" className="w-full sm:w-auto">
+                Continue Shopping
+              </Button>
             </Link>
           </div>
         ) : (
@@ -180,7 +199,10 @@ const Cart = () => {
                           {item.product.name}
                         </h3>
                         <p className="text-base sm:text-lg font-light text-candle-burgundy h-6 overflow-hidden truncate">
-                          ₹{item.product.discountedPrice}
+                          ₹
+                          {item.product.discountedPrice
+                            ? item.product.discountedPrice
+                            : item.product.price}
                         </p>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -188,22 +210,27 @@ const Cart = () => {
                           size="icon"
                           variant="outline"
                           className="h-8 w-8 p-0"
-                          onClick={() => handleMinus(item.product._id)}>
+                          onClick={() => handleMinus(item.product._id)}
+                        >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        <span className="w-6 text-center text-sm">{item.quantity}</span>
+                        <span className="w-6 text-center text-sm">
+                          {item.quantity}
+                        </span>
                         <Button
                           size="icon"
                           variant="outline"
                           className="h-8 w-8 p-0"
-                          onClick={() => handleAddInc(item.product._id)}>
+                          onClick={() => handleAddInc(item.product._id)}
+                        >
                           <Plus className="h-3 w-3" />
                         </Button>
                         <Button
                           size="icon"
                           variant="ghost"
                           className="text-destructive h-8 w-8 p-0"
-                          onClick={() => handleDel(item.product._id)}>
+                          onClick={() => handleDel(item.product._id)}
+                        >
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
@@ -223,7 +250,9 @@ const Cart = () => {
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="text-sm md:text-base">₹ {subTotal.toFixed(2)}</span>
+                    <span className="text-sm md:text-base">
+                      ₹ {subTotal.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>

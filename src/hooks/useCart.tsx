@@ -1,17 +1,16 @@
 import { ReactNode, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/utils/appStore";
-import { useToast } from "@/hooks/use-toast";
 import { userAPI } from "@/services/api";
 import {
-  CartItem as SliceCartItem,
+  CartItem,
   setCart,
   clearCartItem as clearCartItemFromSlice,
 } from "@/utils/cartSlice";
+import toast from "react-hot-toast";
 
 export function useCart() {
   const dispatch = useDispatch();
-  const { toast } = useToast();
 
   const cart = useSelector((store: RootState) => store.cart);
   const user = useSelector((store: RootState) => store.user);
@@ -20,7 +19,7 @@ export function useCart() {
   const refreshCart = async () => {
     try {
       const res = await userAPI.getCart();
-      const mapped: SliceCartItem[] = res.items.map((item) => ({
+      const mapped: CartItem[] = res.items.map((item) => ({
         product: item.product,
         quantity: item.quantity,
         itemsTotal: item.itemsTotal,
@@ -28,11 +27,7 @@ export function useCart() {
       dispatch(setCart(mapped));
     } catch (err) {
       console.error("Failed to load cart:", err);
-      // toast({
-      //   title: "Error",
-      //   description: "Failed to load cart items",
-      //   variant: "destructive",
-      // });
+      toast.error("Failed to load cart items");
     }
   };
 
@@ -40,17 +35,10 @@ export function useCart() {
     try {
       await userAPI.addToCart(itemId);
       await refreshCart();
-      toast({
-        title: "Item added to cart",
-        // description: "Item has been added to your cart",
-      });
+      toast.success("Item added to cart");
     } catch (err) {
       console.error("Failed to add item:", err);
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart",
-        variant: "destructive",
-      });
+      toast.error("Failed to add item to cart");
     }
   };
 
@@ -58,17 +46,10 @@ export function useCart() {
     try {
       await userAPI.removeFromCart(itemId);
       await refreshCart();
-      toast({
-        title: "Item removed",
-        // description: "Item quantity decreased by 1",
-      });
+      toast.success("Item removed from cart");
     } catch (err) {
       console.error("Failed to remove item:", err);
-      toast({
-        title: "Error",
-        description: "Failed to remove item from cart",
-        variant: "destructive",
-      });
+      toast.error("Failed to remove item from cart");
     }
   };
 
@@ -76,17 +57,10 @@ export function useCart() {
     try {
       await userAPI.clearCart(itemId);
       await refreshCart();
-      toast({
-        title: "Cart cleared",
-        description: "All items removed from cart",
-      });
+      toast.success("Cart cleared");
     } catch (err) {
       console.error("Failed to clear cart:", err);
-      toast({
-        title: "Error",
-        description: "Failed to clear cart",
-        variant: "destructive",
-      });
+      toast.error("Failed to clear cart");
     }
   };
 

@@ -9,7 +9,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit2, Eye } from "lucide-react";
 import { Product, productsAPI } from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
 import { ProductDialog } from "./ProductDialog";
 
 interface ProductDetailsDialogProps {
@@ -25,7 +24,6 @@ const ProductDetailsDialog: React.FC<ProductDetailsDialogProps> = ({
   selectedProduct,
   setSelectedProduct,
 }) => {
-  const toast = useToast();
   return (
     <Dialog>
       <DialogTrigger asChild>

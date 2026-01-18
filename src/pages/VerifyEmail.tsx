@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import Header from "@/components/Header";
 import { BASE_URL } from "@/utils/url";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 
 const VerifyEmail = () => {
   const [otp, setOtp] = useState("");
@@ -21,7 +21,6 @@ const VerifyEmail = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const email = location.state?.email;
 
@@ -41,21 +40,14 @@ const VerifyEmail = () => {
         { withCredentials: true }
       );
 
-      toast({
-        title: "Email verified!!",
-        description: "Verification successful",
-      });
+      toast.success("Email verified successfully");
 
       // Redirect to login after successful verification
       navigate("/login");
     } catch (err: any) {
       console.error(err);
 
-      toast({
-        title: "Verification Failed!!",
-        description: "Invalid or expired OTP",
-        variant: "destructive",
-      });
+      toast.error("Invalid or expired OTP");
     } finally {
       setLoading(false);
     }
@@ -70,16 +62,9 @@ const VerifyEmail = () => {
         { withCredentials: true }
       );
 
-      toast({
-        title: "OTP sent successfully!!",
-        description: "Check your email",
-      });
+      toast.success("OTP sent successfully!!");
     } catch (err: any) {
-      toast({
-        title: "Failed to resend OTP",
-        description: "Please try again later",
-        variant: "destructive",
-      });
+      toast.error("Failed to resend OTP");
     }
   };
 

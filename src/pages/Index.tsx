@@ -6,7 +6,7 @@ import Contact from "@/components/Contact";
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-20 flex flex-col">
       <Header />
       <main className="overflow-x-hidden">
         <Hero />

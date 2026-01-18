@@ -29,6 +29,7 @@ export interface Product {
 }
 
 export interface Address {
+  _id: string;
   name: string;
   street: string;
   city: string;
@@ -108,7 +109,7 @@ export const productsAPI = {
     productData: Omit<
       Product,
       "_id" | "createdAt" | "updatedAt" | "avgRating" | "reviews"
-    >
+    >,
   ): Promise<Product> => {
     const response = await fetch(`${BASE_URL}/products`, {
       method: "POST",
@@ -121,7 +122,7 @@ export const productsAPI = {
 
   updateProduct: async (
     id: string,
-    product: Partial<Product>
+    product: Partial<Product>,
   ): Promise<Product> => {
     const response = await fetch(`${BASE_URL}/products/${id}`, {
       method: "PATCH",

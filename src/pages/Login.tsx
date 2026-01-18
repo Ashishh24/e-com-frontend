@@ -16,14 +16,12 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import axios from "axios";
 import { BASE_URL } from "@/utils/url";
-import { useToast } from "@/hooks/use-toast";
-
+import toast from "react-hot-toast";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,9 +32,7 @@ const Login = () => {
         { withCredentials: true }
       );
       dispatch(addUser(response.data.user));
-      toast({
-        title: "Login successful!",
-      });
+      toast.success("Logged in successfully");
       navigate("/");
     } catch (err) {
       console.log(err);

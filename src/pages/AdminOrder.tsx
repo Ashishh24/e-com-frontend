@@ -19,11 +19,10 @@ import {
 } from "@/components/ui/dialog";
 import { Eye } from "lucide-react";
 import { ordersAPI, Product, Order } from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 
 const AdminOrder = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const { toast } = useToast();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
@@ -41,11 +40,7 @@ const AdminOrder = () => {
         setOrders(mappedOrders);
       } catch (error) {
         console.error("Failed to load admin data:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load admin data",
-          variant: "destructive",
-        });
+        toast.error("Failed to load admin data");
       }
     };
 
@@ -68,17 +63,10 @@ const AdminOrder = () => {
         )
       );
 
-      toast({
-        title: "Success",
-        description: "Order status updated successfully",
-      });
+      toast.success("Order status updated successfully");
     } catch (error) {
       console.error("Failed to update order status:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update order status",
-        variant: "destructive",
-      });
+      toast.error("Failed to update order status");
     }
   };
 

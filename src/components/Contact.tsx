@@ -66,18 +66,7 @@ const Contact = () => {
           <div className="grid lg:grid-cols-2 gap-12">
             <div className="space-y-8">
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-xl font-medium text-candle-cream mb-2">
-                    Visit Our Studio
-                  </h3>
-                  <p className="text-candle-cream/80">
-                    123 Artisan Street
-                    <br />
-                    Craft District, CD 12345
-                    <br />
-                    Open Tuesday - Saturday, 10am - 6pm
-                  </p>
-                </div>
+                
 
                 <div>
                   <h3 className="text-xl font-medium text-candle-cream mb-2">

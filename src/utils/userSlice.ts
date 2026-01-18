@@ -1,3 +1,4 @@
+import { Address } from "@/services/api";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface User {
@@ -5,6 +6,15 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  address: Address[];
+  cart: {
+    cartTotal: number;
+    items: {
+      productId: string;
+      quantity: number;
+    }[];
+  };
+  wishlist: string[];
   isAdmin: boolean;
 }
 
@@ -19,7 +29,7 @@ const userSlice = createSlice({
     addUser: (state, action) => {
       return action.payload;
     },
-    removeUser: (state, action) => {
+    removeUser: () => {
       return null;
     },
     updateUser: (state, action) => {

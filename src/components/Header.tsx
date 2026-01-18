@@ -1,129 +1,194 @@
+import { useEffect, useRef, useState } from "react";
 import { ShoppingCart, User, Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { useCart } from "@/hooks/useCart";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/utils/appStore";
+import { removeUser } from "@/utils/userSlice";
 
 const Header = () => {
   const { cart } = useCart();
-  const userData = useSelector((store: RootState) => store.user);
+  const user = useSelector((store: RootState) => store.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const itemCount = cart.itemCount;
 
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [searchText, setSearchText] = useState("");
+
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  /* close search on outside click */
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowMobileSearch(false);
+      }
+    };
+
+    if (showMobileSearch) {
+      document.addEventListener("mousedown", handler);
+    }
+
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showMobileSearch]);
+
+  const handleSearch = () => {
+    if (!searchText.trim()) return;
+    navigate(`/products?search=${encodeURIComponent(searchText.trim())}`);
+    setShowMobileSearch(false);
+    setSearchText("");
+  };
+
   return (
-    <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <header className="border-b border-border/50 bg-background/95 backdrop-blur sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
+          {/* LOGO */}
           <Link
             to="/"
-            className="text-2xl font-light text-candle-warm hover:text-candle-amber transition-colors">
+            className="text-4xl font-light text-candle-warm hover:text-candle-amber transition-colors"
+          >
             GLOWISHII...
           </Link>
 
-
-
+          {/* DESKTOP LINKS */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/"
-              className="text-muted-foreground hover:text-candle-warm transition-colors">
-              Home
-            </Link>
-            <Link
-              to="/products"
-              className="text-muted-foreground hover:text-candle-warm transition-colors">
+            <Link to="/products" className="hover:text-candle-warm">
               Products
             </Link>
-            <Link
-              to="/orders"
-              className="text-muted-foreground hover:text-candle-warm transition-colors">
+            <Link to="/orders" className="hover:text-candle-warm">
               Orders
             </Link>
-            {userData?.isAdmin && (
-              <Link
-                to="/admin"
-                className="text-muted-foreground hover:text-candle-warm transition-colors">
+            {user?.isAdmin && (
+              <Link to="/admin" className="hover:text-candle-warm">
                 Admin
               </Link>
             )}
           </div>
 
-          <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-2">
-              <Input placeholder="Search candles..." className="w-64" />
-              <Button size="icon" variant="ghost">
+          {/* ACTIONS */}
+          <div className="flex items-center gap-3">
+            {/* DESKTOP SEARCH */}
+            <div className="hidden md:flex items-center gap-2">
+              <Input
+                placeholder="Search candles..."
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                className="w-64"
+              />
+              <Button size="icon" variant="ghost" onClick={handleSearch}>
                 <Search className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="md:hidden">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="ghost">
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <Link to="/" className="w-full block">
-                      Home
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link to="/products" className="w-full block">
-                      Products
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link to="/orders" className="w-full block">
-                      Orders
-                    </Link>
-                  </DropdownMenuItem>
-                  {userData?.isAdmin && (
-                    <DropdownMenuItem>
-                      <Link to="/admin" className="w-full block">
-                        Admin
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            {/* MOBILE SEARCH ICON */}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="md:hidden"
+              onClick={() => setShowMobileSearch(!showMobileSearch)}
+            >
+              <Search className="h-4 w-4" />
+            </Button>
 
-            <Link to="/cart">
+            {/* DESKTOP CART */}
+            <Link to="/cart" className="hidden md:block">
               <Button size="icon" variant="ghost" className="relative">
                 <ShoppingCart className="h-4 w-4" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-candle-amber text-candle-cream text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-candle-amber text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {itemCount}
                   </span>
                 )}
               </Button>
             </Link>
 
-            {userData === null ? (
-              <Link to="/login">
+            {/* USER DROPDOWN */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button size="icon" variant="ghost">
                   <User className="h-4 w-4" />
                 </Button>
-              </Link>
-            ) : (
-              <Link to="/profile">
-                <Button size="icon" variant="ghost">
-                  <User className="h-4 w-4" />
-                </Button>
-              </Link>
-            )}
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent align="end" className="w-48">
+                {user ? (
+                  <>
+                    <DropdownMenuItem disabled>
+                      Hi, {user.name}
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuItem onClick={() => navigate("/profile")}>
+                      My Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/orders")}>
+                      My Orders
+                    </DropdownMenuItem>
+
+                    {/* MOBILE CART */}
+                    <DropdownMenuItem
+                      className="md:hidden"
+                      onClick={() => navigate("/cart")}
+                    >
+                      Cart ({itemCount})
+                    </DropdownMenuItem>
+
+                    {/* MOBILE ADMIN LINK */}
+                    {user.isAdmin && (
+                      <DropdownMenuItem
+                        className="md:hidden"
+                        onClick={() => navigate("/admin")}
+                      >
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    )}
+
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        dispatch(removeUser());
+                        navigate("/login");
+                      }}
+                    >
+                      Logout
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <DropdownMenuItem onClick={() => navigate("/login")}>
+                    Login
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
+
+      {/* MOBILE SEARCH POPUP */}
+      {showMobileSearch && (
+        <div className="flex md:hidden w-full">
+          <Input
+            placeholder="Search candles..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            className="w-full"
+          />
+        </div>
+      )}
     </header>
   );
 };

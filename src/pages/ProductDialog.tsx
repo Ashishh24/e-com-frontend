@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { uploadMediaFiles } from "@/utils/uploadMedia";
 import { Product } from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 
 interface ProductDialogProps {
   triggerButton?: React.ReactNode;
@@ -26,7 +26,6 @@ export const ProductDialog: React.FC<ProductDialogProps> = ({
   onSave,
 }) => {
   const isEdit = !!product;
-  const { toast } = useToast();
 
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<Product>>({
@@ -110,11 +109,7 @@ export const ProductDialog: React.FC<ProductDialogProps> = ({
       !formData.price ||
       !formData.size
     ) {
-      toast({
-        title: "Error",
-        description: "Please fill all required fields!",
-        variant: "destructive",
-      });
+      toast.error("Please fill all required fields!");
       return;
     }
 
@@ -125,20 +120,13 @@ export const ProductDialog: React.FC<ProductDialogProps> = ({
     } as Product;
 
     if (productToSave.images.length === 0) {
-      toast({
-        title: "Error",
-        description: "At least one product photo is required!",
-        variant: "destructive",
-      });
+      toast.error("At least one product photo is required!");
       return;
     }
 
     try {
       await onSave(productToSave);
-      toast({
-        title: "Success",
-        description: `Product ${isEdit ? "updated" : "added"} successfully!`,
-      });
+      toast.success(`Product ${isEdit ? "updated" : "added"} successfully!`);
       setOpen(false);
       if (!isEdit) {
         setFormData({
@@ -159,11 +147,7 @@ export const ProductDialog: React.FC<ProductDialogProps> = ({
       }
     } catch (err) {
       console.error(err);
-      toast({
-        title: "Error",
-        description: `Failed to ${isEdit ? "update" : "add"} product.`,
-        variant: "destructive",
-      });
+      toast.error(`Failed to ${isEdit ? "update" : "add"} product.`);
     }
   };
 

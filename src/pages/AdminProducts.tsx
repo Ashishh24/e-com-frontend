@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Plus, Trash2, Edit2, Eye } from "lucide-react";
 import { productsAPI, Product } from "@/services/api";
-import { useToast } from "@/hooks/use-toast";
+import toast from "react-hot-toast";
 import { ProductDialog } from "./ProductDialog";
 import ProductDetailsDialog from "./ProductDetailsDialog";
 
@@ -26,7 +26,6 @@ interface AdminProduct extends Product {
   status: "active" | "inactive";
 }
 const AdminProducts = () => {
-  const { toast } = useToast();
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -40,11 +39,7 @@ const AdminProducts = () => {
           data.map((p) => ({ ...p, status: p.inStock ? "active" : "inactive" }))
         );
       } catch (err) {
-        toast({
-          title: "Error",
-          description: "Failed to load products",
-          variant: "destructive",
-        });
+        toast.error("Failed to load products");
       } finally {
         setLoading(false);
       }
@@ -57,16 +52,9 @@ const AdminProducts = () => {
       setDeleteDialogOpen(false);
       await productsAPI.deleteProduct(p._id);
       setProducts((prev) => prev.filter((prod) => prod._id !== p._id));
-      toast({
-        title: "Deleted",
-        description: `${p.name} deleted successfully.`,
-      });
+      toast.success(`${p.name} deleted successfully.`);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete product.",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete product");
     } finally {
       setDeleteDialogOpen(false); // ✅ close after delete
     }
@@ -87,16 +75,9 @@ const AdminProducts = () => {
         )
       );
 
-      toast({
-        title: "Updated",
-        description: "Product updated successfully!",
-      });
+      toast.success("Product updated successfully!");
     } catch (err) {
-      toast({
-        title: "Error",
-        description: "Product updation failed!",
-        variant: "destructive",
-      });
+      toast.error("Failed to update product");
     }
   };
 
